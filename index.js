@@ -8,13 +8,13 @@ import User from './src/models/User.js';
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('🟢 Conectado com sucesso ao PostgreSQL da Vercel/Neon!');
+    console.log('Conectado com sucesso ao PostgreSQL da Vercel/Neon!');
 
     await sequelize.sync(); 
-    console.log('🔄 Modelos sincronizados.');
+    console.log('Modelos sincronizados.');
 
   } catch (error) {
-    console.error('❌ Erro na conexão com o banco:', error);
+    console.error('Erro na conexão com o banco: ', error);
   }
 })();
 
