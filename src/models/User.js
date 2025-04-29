@@ -1,24 +1,28 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
+import sequelize from '../database/db.js'; // caminho para sua instância do Sequelize
 
-const userSchema = new mongoose.Schema({
-
-    name: {
-        type: String,
-        required: true
+const User = sequelize.define('User', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: true
     },
-    password: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        trim: true,    
-        lowercase: true 
-
+    set(value) {
+      this.setDataValue('email', value.trim().toLowerCase());
     }
+  }
+}, {
+  tableName: 'users', // Nome da tabela no banco
+  timestamps: false   // se quiser evitar createdAt e updatedAt
 });
-
-const User = mongoose.model('User', userSchema);
 
 export default User;
