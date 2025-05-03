@@ -8,8 +8,9 @@ const register = async (req, res) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     const {name, password, email} = req.body;
+    console.log(name, password, email)
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ where: {email} });
     if (existingUser) {
         return res.status(400).json({ message: "E-mail já cadastrado" });
     }
@@ -38,10 +39,12 @@ const login = async (req, res) => {
     const { email, password } = req.body
 
     try{
-        const findUser = await User.findOne({ email }).select('+password');
+        console.log(email, password)
+        const findUser = await User.findOne({ where: {email} });
+        console.log(findUser)
         if(!findUser) return res.status(400).json({message: "Usuário não achado!"})
         
-        const match = bcrypt.compare(password, findUser.password)
+        const match = await bcrypt.compare(password, findUser.password)
 
         if(!match) return res.status(400).json({message: "Credenciais inválidas!"})
         const token = jwt.sign({id: findUser.id}, process.env.JWT_SECRET, {expiresIn: '1hr'})
