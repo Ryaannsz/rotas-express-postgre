@@ -2,4 +2,4 @@
 
 
 
-[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/VOG-yhmjx00)
+[![Watch the video](https://img.youtube.com/vi/QJPFw77ijw0/maxresdefault.jpg)](https://youtu.be/QJPFw77ijw0)
