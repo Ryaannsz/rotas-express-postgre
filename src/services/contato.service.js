@@ -28,7 +28,7 @@ const registerContact = async (req, res) => {
     }
 }
 
-const deleteContact = async(req, res) => {
+const deleteContact = async(email) => {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -39,6 +39,17 @@ const deleteContact = async(req, res) => {
     }
 
     try{
+
+        const result = Contato.destroy({
+            where: {
+                email: email
+            }
+        });
+        if (result === 0) {
+            return res.status.json({message: "Nenhum contato encontrado para excluir."});
+          } else {
+            return res.status.json({message: "Contato excluído com sucesso!"});
+          }
 
     }catch (err){
         return res.status.json({message: "Erro ao deletar o contato! "+err});
