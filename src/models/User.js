@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../database/db.js'; // caminho para sua instância do Sequelize
+import sequelize from '../database/db.js'; 
 
 const User = sequelize.define('User', {
   name: {
@@ -21,8 +21,13 @@ const User = sequelize.define('User', {
     }
   }
 }, {
-  tableName: 'users', // Nome da tabela no banco
-  timestamps: false   // se quiser evitar createdAt e updatedAt
+  tableName: 'users', 
+  timestamps: false   
+});
+
+User.hasMany(Contato, {
+  foreignKey: 'userId', 
+  as: 'contatos'        
 });
 
 export default User;

@@ -8,7 +8,7 @@ const register = async (req, res) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     const {name, password, email} = req.body;
-    console.log(name, password, email)
+
 
     const existingUser = await User.findOne({ where: {email} });
     if (existingUser) {
