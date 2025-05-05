@@ -24,4 +24,8 @@ router.put("/contatos/id", verifyToken, contatoController.putEntity)
 
 router.post("/contatos", verifyToken, contatoController.postEntity)
 
+router.patch("/contatos/id", verifyToken, contatoController.patchEntity)
+
+router.delete("/contatos/id", verifyToken, contatoController.deleteEntity)
+
 export default router
