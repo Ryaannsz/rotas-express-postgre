@@ -27,4 +27,12 @@ const patchEntity = async(id, updatedData, res) => {
     contatoService.updateContactPartial(id, updatedData, res)
 }
 
-export default {getEntities, getEntitiesById, putEntity, deleteEntity, patchEntity}
+const postEntity = async(req, res) => {
+
+    if(!req.body || !req.body.email || !req.body.nome || !req.body.telefone) 
+    return res.status(400).json({message: "Faltando informações."});
+
+    contatoService.registerContact()
+}
+
+export default {getEntities, getEntitiesById, putEntity, deleteEntity, patchEntity, postEntity}
