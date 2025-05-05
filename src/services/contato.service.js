@@ -78,4 +78,61 @@ const putContact = async (updateData, id, res) => {
     }
 }
 
-export default {registerContact, deleteContact}
+const getContactsByUserId = async (userId, res) => {
+    try {
+      const contatos = await Contato.findAll({
+        where: { userId: userId },
+      });
+  
+      if (contatos.length === 0) {
+        return res.status(404).json({ message: "Nenhum contato encontrado para este usuário." });
+      }
+  
+      return res.status(200).json(contatos);
+    } catch (err) {
+      
+      return res.status(500).json({ message: "Erro ao buscar contatos: " + err.message });
+    }
+  }
+
+  const getContactById = async (id, res) => {
+    try {
+      const contato = await Contato.findOne({
+        where: { id: id }
+      });
+  
+      if (!contato) {
+        return res.status(404).json({ message: "Contato não encontrado." });
+      }
+  
+      return res.status(200).json(contato);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao buscar o contato: " + err.message });
+    }
+  }
+
+  const updateContactPartial = async (id, updatedData, res) => {
+    try {
+      // Busca o contato pelo id
+      const contato = await Contato.findOne({
+        where: { id: id }
+      });
+  
+      if (!contato) {
+        return res.status(404).json({ message: "Contato não encontrado." });
+      }
+  
+      const updatedContato = await contato.update(updatedData);
+  
+      return res.status(200).json(updatedContato);
+  
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao atualizar o contato: " + err.message });
+    }
+  };
+  
+  
+  
+
+export default {registerContact, deleteContact, getContactsByUserId,
+     getContactById, updateContactPartial, putContact}
