@@ -21,5 +21,10 @@ const deleteEntity = async(email, res) => {
         contatoService.deleteContact(email, res)
 }
 
+const patchEntity = async(id, updatedData, res) => {
+    if(!id) return res.status(500).json({message: "Id não informado!"})
+    if(!updatedData) return res.status(500).json({message: "Valores não passados!"})
+    contatoService.updateContactPartial(id, updatedData, res)
+}
 
-export default {getEntities, getEntitiesById, putEntity, deleteEntity}
+export default {getEntities, getEntitiesById, putEntity, deleteEntity, patchEntity}
