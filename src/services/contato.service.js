@@ -113,7 +113,6 @@ const getContactsByUserId = async (userId, res) => {
 
   const updateContactPartial = async (id, updatedData, res) => {
     try {
-      // Busca o contato pelo id
       const contato = await Contato.findOne({
         where: { id: id }
       });
