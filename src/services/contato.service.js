@@ -28,11 +28,9 @@ const registerContact = async (req, res) => {
     }
 }
 
-const deleteContact = async(email) => {
+const deleteContact = async(email, res) => {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    const {name, telefone, email} = req.body;
 
     if (!emailRegex.test(email)) {
         return res.status(400).json({ message: "E-mail inválido" });
@@ -46,15 +44,38 @@ const deleteContact = async(email) => {
             }
         });
         if (result === 0) {
-            return res.status.json({message: "Nenhum contato encontrado para excluir."});
+            return res.status(404).json({message: "Nenhum contato encontrado para excluir."});
           } else {
-            return res.status.json({message: "Contato excluído com sucesso!"});
+            return res.status(200).json({message: "Contato excluído com sucesso!"});
           }
 
     }catch (err){
-        return res.status.json({message: "Erro ao deletar o contato! "+err});
+        return res.status(500).json({message: "Erro ao deletar o contato! "+err});
     }
-
 }
 
-export default {registerContact}
+const putContact = async (updateData, id, res) => {
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(updateData.email)) {
+        return res.status(400).json({ message: "E-mail inválido" });
+    }
+
+
+    try{
+        const [updated] = await Contato.update(updateData, {
+            where: {id: id}
+        });
+    
+        if (updated === 0) {
+            return res.status(404).json({ message: "Nenhum contato encontrado para atualizar." });
+          } else {
+            return res.status(200).json({ message: "Contato atualizado com sucesso!" });
+          }
+    }catch (err){
+        return res.status(500).json({message: "Erro ao atualizar contato! "+err})
+    }
+}
+
+export default {registerContact, deleteContact}
