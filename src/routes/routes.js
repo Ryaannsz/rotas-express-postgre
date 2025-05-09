@@ -18,14 +18,14 @@ router.post("/login", userController.loginEntity);
 
 router.get("/contatos", verifyToken, contatoController.getEntities)
 
-router.get("/contatos/id", verifyToken, contatoController.getEntitiesById)
+router.get("/contatos/:id", verifyToken, contatoController.getEntitiesById)
 
-router.put("/contatos/id", verifyToken, contatoController.putEntity)
+router.put("/contatos/:id", verifyToken, contatoController.putEntity)
 
 router.post("/contatos", verifyToken, contatoController.postEntity)
 
-router.patch("/contatos/id", verifyToken, contatoController.patchEntity)
+router.patch("/contatos/:id", verifyToken, contatoController.patchEntity)
 
-router.delete("/contatos/id", verifyToken, contatoController.deleteEntity)
+router.delete("/contatos/:id", verifyToken, contatoController.deleteEntity)
 
 export default router

@@ -1,6 +1,9 @@
-import Contato from "../models/Contato";
+import Contato from "../models/Contato.js";
 
 const registerContact = async (req, res) => {
+
+    const userId = req.userId;
+ 
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -19,28 +22,25 @@ const registerContact = async (req, res) => {
     try{
         const createContact = await Contato.create({
             name,
-            password,
-            telefone
+            email,
+            telefone,
+            userId
         });
-        return res.status.json({message: "Contato criado com sucesso!", contact: createContact})
+        return res.status(201).json({message: "Contato criado com sucesso!", contact: createContact})
     }catch (err){
-        return res.status.json({message: "Erro ao criar o contato."})
+        return res.status(500).json({message: "Erro ao criar o contato."})
     }
 }
 
-const deleteContact = async(email, res) => {
+const deleteContact = async (req, res) => {
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ message: "E-mail inválido" });
-    }
+  const id = req.params.id;
 
     try{
 
-        const result = Contato.destroy({
+        const result = await Contato.destroy({
             where: {
-                email: email
+                id: id
             }
         });
         if (result === 0) {
@@ -54,14 +54,10 @@ const deleteContact = async(email, res) => {
     }
 }
 
-const putContact = async (updateData, id, res) => {
+const putContact = async (req, res) => {
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(updateData.email)) {
-        return res.status(400).json({ message: "E-mail inválido" });
-    }
-
+    const id = req.params.id;
+    const updateData = req.body;
 
     try{
         const [updated] = await Contato.update(updateData, {
@@ -78,7 +74,8 @@ const putContact = async (updateData, id, res) => {
     }
 }
 
-const getContactsByUserId = async (userId, res) => {
+const getContactsByUserId = async (req, res) => {
+  const userId = req.userId;
     try {
       const contatos = await Contato.findAll({
         where: { userId: userId },
@@ -95,7 +92,9 @@ const getContactsByUserId = async (userId, res) => {
     }
   }
 
-  const getContactById = async (id, res) => {
+  const getContactById = async (req, res) => {
+  
+    const id = req.params.id;
     try {
       const contato = await Contato.findOne({
         where: { id: id }
@@ -111,7 +110,11 @@ const getContactsByUserId = async (userId, res) => {
     }
   }
 
-  const updateContactPartial = async (id, updatedData, res) => {
+  const updateContactPartial = async (req, res) => {
+  
+    const id = req.params.id;
+    const updateData = req.body;
+
     try {
       const contato = await Contato.findOne({
         where: { id: id }
@@ -121,7 +124,7 @@ const getContactsByUserId = async (userId, res) => {
         return res.status(404).json({ message: "Contato não encontrado." });
       }
   
-      const updatedContato = await contato.update(updatedData);
+      const updatedContato = await contato.update(updateData);
   
       return res.status(200).json(updatedContato);
   
