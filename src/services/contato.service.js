@@ -55,24 +55,31 @@ const deleteContact = async (req, res) => {
 }
 
 const putContact = async (req, res) => {
-
     const id = req.params.id;
-    const updateData = req.body;
+    const { name, email, telefone } = req.body;
 
-    try{
-        const [updated] = await Contato.update(updateData, {
-            where: {id: id}
-        });
-    
-        if (updated === 0) {
-            return res.status(404).json({ message: "Nenhum contato encontrado para atualizar." });
-          } else {
-            return res.status(200).json({ message: "Contato atualizado com sucesso!" });
-          }
-    }catch (err){
-        return res.status(500).json({message: "Erro ao atualizar contato! "+err})
+    // Verifica se todos os campos foram enviados
+    if (!name || !email || !telefone) {
+        return res.status(400).json({ message: "Todos os campos (name, email, telefone) são obrigatórios para PUT." });
     }
-}
+
+    try {
+        const contato = await Contato.findByPk(id);
+        if (!contato) {
+            return res.status(404).json({ message: "Contato não encontrado." });
+        }
+
+        await Contato.update(
+            { name, email, telefone },
+            { where: { id } }
+        );
+
+        return res.status(200).json({ message: "Contato atualizado com sucesso!" });
+
+    } catch (err) {
+        return res.status(500).json({ message: "Erro ao atualizar contato! " + err.message });
+    }
+};
 
 const getContactsByUserId = async (req, res) => {
   const userId = req.userId;
