@@ -8,16 +8,18 @@ const registerContact = async (req, res) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const {name, telefone, email} = req.body;
+    
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "E-mail inválido" });
+  }
 
-    const existingContact = await Contato.findOne({ where: {email} });
+    const existingContact = await Contato.findOne({ where: {email, userId} });
 
     if (existingContact) {
         return res.status(400).json({ message: "E-mail já cadastrado" });
     }
 
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ message: "E-mail inválido" });
-    }
+
 
     try{
         const createContact = await Contato.create({
@@ -35,12 +37,15 @@ const registerContact = async (req, res) => {
 const deleteContact = async (req, res) => {
 
   const id = req.params.id;
+  const userId = req.userId;
+  
 
     try{
 
         const result = await Contato.destroy({
             where: {
-                id: id
+                id: id,
+                userId: userId
             }
         });
         if (result === 0) {
@@ -55,31 +60,33 @@ const deleteContact = async (req, res) => {
 }
 
 const putContact = async (req, res) => {
-    const id = req.params.id;
-    const { name, email, telefone } = req.body;
+  const id = req.params.id;
+  const userId = req.userId;
+  const { name, email, telefone } = req.body;
 
-    // Verifica se todos os campos foram enviados
-    if (!name || !email || !telefone) {
-        return res.status(400).json({ message: "Todos os campos (name, email, telefone) são obrigatórios para PUT." });
-    }
+  if (!name || !email || !telefone) {
+      return res.status(400).json({ message: "Todos os campos (name, email, telefone) são obrigatórios para PUT." });
+  }
 
-    try {
-        const contato = await Contato.findByPk(id);
-        if (!contato) {
-            return res.status(404).json({ message: "Contato não encontrado." });
-        }
+  try {
+      const contato = await Contato.findOne({
+          where: { id: id, userId: userId }
+      });
 
-        await Contato.update(
-            { name, email, telefone },
-            { where: { id } }
-        );
+      if (!contato) {
+          return res.status(404).json({ message: "Contato não encontrado ou não pertence a este usuário." });
+      }
 
-        return res.status(200).json({ message: "Contato atualizado com sucesso!" });
+      await contato.update({ name, email, telefone });
 
-    } catch (err) {
-        return res.status(500).json({ message: "Erro ao atualizar contato! " + err.message });
-    }
+      return res.status(200).json({ message: "Contato atualizado com sucesso!" });
+
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Erro ao atualizar contato!" });
+  }
 };
+
 
 const getContactsByUserId = async (req, res) => {
   const userId = req.userId;
@@ -102,9 +109,13 @@ const getContactsByUserId = async (req, res) => {
   const getContactById = async (req, res) => {
   
     const id = req.params.id;
+    const userId = req.userId;
     try {
       const contato = await Contato.findOne({
-        where: { id: id }
+        where: { 
+          id: id,
+          userId: userId
+         }
       });
   
       if (!contato) {
@@ -121,10 +132,15 @@ const getContactsByUserId = async (req, res) => {
   
     const id = req.params.id;
     const updateData = req.body;
+    const userId = req.userId;
+    const { name, email, telefone } = updateData;
 
     try {
       const contato = await Contato.findOne({
-        where: { id: id }
+        where: { 
+          id: id,
+          userId: userId
+         }
       });
   
       if (!contato) {
