@@ -6,7 +6,7 @@
 
 
 #rotas com cadastro de contato
-https://youtu.be/73-zqrstS9M
+
 [![Watch the video](https://img.youtube.com/vi/73-zqrstS9M/maxresdefault.jpg)](https://youtu.be/73-zqrstS9M)
 
 
