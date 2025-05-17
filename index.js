@@ -5,6 +5,7 @@ import sequelize from './src/database/db.js';
 import User from './src/models/User.js';
 import Contato from './src/models/Contato.js';
 import RelationTables from './src/models/RelationTables.js';
+import cors from 'cors';
 
 
 (async () => {
@@ -12,7 +13,7 @@ import RelationTables from './src/models/RelationTables.js';
     await sequelize.authenticate();
     console.log('Conectado com sucesso ao PostgreSQL da Vercel/Neon!');
 
-    await sequelize.sync(); 
+    await sequelize.sync();
     console.log('Modelos sincronizados.');
 
   } catch (error) {
@@ -23,8 +24,8 @@ import RelationTables from './src/models/RelationTables.js';
 const app = express();
 
 
-
+app.use(cors());
 app.use(express.json());
 app.use(router);
 
-app.listen(8080)
+app.listen(8080);
